@@ -29,18 +29,18 @@ variable "vip_enabled_vlans" {
 
 # optional
 variable "vip_client_profiles_list" {
-  type = list(string)
-  default = [ "/Common/clientssl" ]
+  type    = list(string)
+  default = ["/Common/clientssl"]
 }
 
 variable "vip_server_profiles_list" {
-  type = list(string)
-  default = [ "/Common/serverssl" ]
+  type    = list(string)
+  default = ["/Common/serverssl"]
 }
 
 variable "vip_sec_log_profiles_list" {
-  type = list(string)
-  default = [ "/Common/global-network" ]
+  type    = list(string)
+  default = ["/Common/global-network"]
 }
 
 variable "vip_source_address_translation" {
@@ -55,8 +55,8 @@ variable "vip_source_address_translation" {
 }
 
 variable "vip_irule_list" {
-  type = list(string)
-  default = [ "/Common/Drop-Non-Tufts-Connections" ]
+  type    = list(string)
+  default = ["/Common/Drop-Non-Tufts-Connections"]
 }
 
 ####
@@ -66,13 +66,17 @@ variable "pool_name" {
   type = string
 }
 
-variable "pool_load_balancing_mode" {
+variable "pool_description" {
   type = string
+}
+
+variable "pool_load_balancing_mode" {
+  type    = string
   default = "round-robin"
 }
 
 variable "pool_minimum_active_members" {
-  type = number
+  type    = number
   default = 1
 }
 
@@ -86,15 +90,15 @@ variable "pool_monitors_list" {
 
 variable "node_map" {
   type = map(object({
-        name = string,
-        description = string,
-        address = string,
-    }))
-    default = {}
+    name        = string,
+    description = string,
+    address     = string,
+  }))
+  default = {}
 }
 
 variable "node_listen_port" {
-  type =  number
+  type = number
 }
 
 # variable "node_connection_limit" {
