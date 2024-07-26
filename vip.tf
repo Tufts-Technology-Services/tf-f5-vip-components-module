@@ -1,6 +1,6 @@
 
 resource "bigip_ltm_virtual_server" "vip" {
-  name                       = "/${var.vip_partition}/${var.vip_name}"
+  name                       = "/${var.vip_partition}/${var.vip_name}-${var.vip_port}"
   destination                = var.vip_destination_ip
   description                = "tf-${var.vip_description}"
   port                       = var.vip_port
