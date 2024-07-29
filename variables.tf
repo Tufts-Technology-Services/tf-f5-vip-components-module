@@ -81,8 +81,9 @@ variable "pool_minimum_active_members" {
 }
 
 variable "pool_monitors_list" {
-  # no idea if these are meant to be strings or ids or what
+  # docs: "List of monitor names to associate with the pool"
   type = list(string)
+  default = []
 }
 
 ####

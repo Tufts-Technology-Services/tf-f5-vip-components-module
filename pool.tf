@@ -4,5 +4,5 @@ resource "bigip_ltm_pool" "pool" {
   load_balancing_mode    = var.pool_load_balancing_mode
   description            = "tf-${var.pool_description}"
   minimum_active_members = var.pool_minimum_active_members
-  # monitors               = [bigip_ltm_monitor.monitor.name]
+  monitors               = var.pool_monitors_list
 }
