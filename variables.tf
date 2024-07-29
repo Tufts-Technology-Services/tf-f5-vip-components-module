@@ -93,6 +93,7 @@ variable "node_map" {
     name        = string,
     description = string,
     address     = string,
+    pool_state  = string,
   }))
   default = {}
 }
