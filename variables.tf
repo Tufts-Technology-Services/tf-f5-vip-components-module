@@ -38,6 +38,14 @@ variable "vip_server_profiles_list" {
   default = ["/Common/serverssl"]
 }
 
+# Note: If you override this, you MUST include /Common/tcp among the rest of your list. 
+# docs: "(Optional) List of profiles associated both client and server contexts 
+# on the virtual server. This includes protocol, ssl, http, etc."
+variable "vip_profiles_list" {
+  type    = list(string)
+  default = ["/Common/tcp"]
+}
+
 variable "vip_sec_log_profiles_list" {
   type    = list(string)
   default = ["/Common/global-network"]
