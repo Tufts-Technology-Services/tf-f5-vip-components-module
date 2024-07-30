@@ -4,6 +4,11 @@
 
 See below for examples.  Most input variables make an attempt at setting a "sane and reasonable" default but can be overridden if desired.  For the list of input variables and their requirements/defaults, see: [./variables.tf](variables.tf)
 
+If you don't see a variable for something that you need, it's probably either:
+
+1. it just hasn't been added to the module yet; feel free to open an issue to discuss; or,
+1. it's something that just isn't straightforward at all or doesn't align with the web UI; try looking at [.properties.md](properties.md) to see if it's documented there
+
 Note that creating the nodes themselves happens outside the module to allow for flexibility and for nodes participating in >1 pool.
 
 Here's an example:
