@@ -10,6 +10,19 @@ While the web UI has a separate setting/box for "SMTP Profile", this actually ma
 
 `vip_profiles_list = ["/Common/tcp", "/Common/smtp"]`
 
+### irules
+
+If you're applying an irule that uses HTTP_REQUEST, you might see a similar error:
+
+> Error: 01071912:3: HTTP_REQUEST event in rule (/Enterprise/my-irule) requires an associated HTTP or FASTHTTP profile on the virtual-server (/Enterprise/my-vip).  You can resolve this by passing the `http` profile (or a child thereof):
+
+`profiles = ["/Common/http"]`
+
+TBD if:
+
+- this is required to be on `profiles` (both client and server) or just one or the other
+- you also still need the `tcp` profile in addition
+
 ## Pool level
 
 ### SMTP health checks
