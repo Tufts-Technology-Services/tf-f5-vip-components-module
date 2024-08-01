@@ -18,7 +18,7 @@ locals {
   vip_partition = "mypartition"
   
   # this structure is passed into the module and also 
-  # reused for node creation outside of the model
+  # reused for node creation outside of the module
   node_map_main = {
     # this key currently isn't used in the module, but might be at a future date.
     # any value will work here, as long as they're unique.
@@ -40,7 +40,7 @@ locals {
   }
 }
 
-# now let's creat our nodes based on the structure  
+# now let's create our nodes based on the structure  
 resource "bigip_ltm_node" "node" {
   for_each = local.node_map_main
   
@@ -89,3 +89,11 @@ On `terraform destroy`, sometimes the provider has a slight race condition when 
 > │ Error: 01070110:3: Node address '/somepartition/my-node-name' is referenced by a member of pool '/somepartition/my-pool-name-80'.
 
 even though that's the exact stuff you're trying to `destroy`. Running another `terraform destroy` will finish the teardown.
+
+A similar issue can happen on `terraform apply`, where you're creating X and Y, where Y depends on X, and you'll get a failure:
+
+> Error: 01020036:3: The requested Node (/Enterprise/smtpout-prod-05.uit.tufts.edu) was not found.
+
+and same thing where if you apply it a second time, it'll sort itself out.
+
+Unfortunately, TF is subject to the whims and flaws of the vendor API on the device.  TBD if setting some kind of delay/repeat or an explicit `depends-on` relationship will improve this.
