@@ -84,6 +84,8 @@ module "test-vip" {
 
 ## Known issues
 
+### Race conditions
+
 On `terraform destroy`, sometimes the provider has a slight race condition when removing everything, and you might see an error like the following:
 
 > │ Error: 01070110:3: Node address '/somepartition/my-node-name' is referenced by a member of pool '/somepartition/my-pool-name-80'.
@@ -97,3 +99,17 @@ A similar issue can happen on `terraform apply`, where you're creating X and Y, 
 and same thing where if you apply it a second time, it'll sort itself out.
 
 Unfortunately, TF is subject to the whims and flaws of the vendor API on the device.  TBD if setting some kind of delay/repeat or an explicit `depends-on` relationship will improve this.
+
+### "node" unexpected argument
+
+The following results when assigning a partition permission to the service account of anything less than "manager" (for example, "application manager").  It's likely that the node can be created but then not subsequently updated (see the "error modifying node" bit) in a followup operation.  With "manager" level permissions, this doesn't happen.
+
+```bash
+
+│ Error: error modifying node /Enterprise/some-hostname.it.tufts.edu: "node" unexpected argument
+│ 
+│   with bigip_ltm_node.node["02"],
+│   on test.tf line 25, in resource "bigip_ltm_node" "node":
+│   25: resource "bigip_ltm_node" "node" {
+│ 
+```
