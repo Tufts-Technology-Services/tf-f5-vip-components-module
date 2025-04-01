@@ -61,7 +61,7 @@ Now let's create the actual VIP, pool, and handle attaching the nodes to the poo
 
 ```hcl
 module "test-vip" {
-  source            = "github.com/Tufts-Technology-Services/tf-f5-vip-components-module?ref=v0.0.5"
+  source            = "github.com/Tufts-Technology-Services/tf-f5-vip-components-module?ref=v0.0.7"
 
   # the vip_port will automatically get appended to the vip_name
   vip_name           = "test-vip"
