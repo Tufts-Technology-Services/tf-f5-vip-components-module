@@ -61,6 +61,12 @@ variable "vip_sec_log_profiles_list" {
   description = "list of profiles, including partition"
 }
 
+variable "vip_persistence_profiles" {
+  type        = list(string)
+  default     = ["/Common/source_addr"]
+  description = "list of profiles, including partition"
+}
+
 variable "vip_source_address_translation" {
   type = string
 

@@ -9,6 +9,7 @@ resource "bigip_ltm_virtual_server" "vip" {
   server_profiles            = var.vip_server_profiles_list
   profiles                   = var.vip_profiles_list
   security_log_profiles      = var.vip_sec_log_profiles_list
+  persistence_profiles       = var.vip_persistence_profiles
   source_address_translation = var.vip_source_address_translation
   vlans_enabled              = true
   vlans                      = var.vip_enabled_vlans
