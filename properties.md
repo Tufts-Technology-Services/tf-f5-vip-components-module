@@ -6,7 +6,7 @@ Not everything is necessarily straightforward between the web UI and the `F5Netw
 
 ### FTP profile
 
-While the web UI has a separate setting/box for "SMTP Profile", this actually maps under the hood to just another "service profile." You can add `"/Common/ftp"` to the lists of profiles like usual and it'll appear properly under the "Ftp profile" setting in the web UI.
+While the web UI has a separate setting/box for "FTP Profile", this actually maps under the hood to just another "service profile." You can add `"/Common/ftp"` to the lists of profiles like usual and it'll appear properly under the "FTP Profile" setting in the web UI.
 
 ### SMTP profile
 
