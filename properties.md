@@ -4,6 +4,10 @@ Not everything is necessarily straightforward between the web UI and the `F5Netw
 
 ## VIP level
 
+### FTP profile
+
+While the web UI has a separate setting/box for "SMTP Profile", this actually maps under the hood to just another "service profile." You can add `"/Common/ftp"` to the lists of profiles like usual and it'll appear properly under the "Ftp profile" setting in the web UI.
+
 ### SMTP profile
 
 While the web UI has a separate setting/box for "SMTP Profile", this actually maps under the hood to just another "service profile."  If you need this, pass something like the following to the module (and yes, you MUST include the tcp one):
