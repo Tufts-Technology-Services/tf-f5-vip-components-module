@@ -19,7 +19,7 @@ locals {
   
   # this structure is passed into the module and also 
   # reused for node creation outside of the module
-  UNIQUENAME_node_map_main = {
+  UNIQUENAME_node_map = {
     # this key currently isn't used in the module, but might be at a future date.
     # any value will work here, as long as they're unique.
     "01" = {
@@ -42,12 +42,13 @@ locals {
 
 # now let's create our nodes based on the structure  
 resource "bigip_ltm_node" "UNIQUENAME_node" {
-  for_each = local.UNIQUENAME_node_map_main
+  for_each = local.UNIQUENAME_node_map
   
-  name             = "/${local.vip_partition}/${each.value.name}"
+  name             = "/${local.UNIQUENAME_vip_partition}/${each.value.name}"
   address          = "${each.value.address}"
   connection_limit = "0"
   dynamic_ratio    = "1"
+  monitor          = "/Common/tcp"
 
   # it's recommended to add some sort of signifier so that others will know 
   # this node is managed via terraform, thus the tf- here in the description
@@ -80,7 +81,7 @@ module "UNIQUENAME-vip-80" {
   pool_description   = "pool-UNIQUENAME-tf"
 
   node_listen_port   = 80
-  node_map           = local.UNIQUENAME_node_map_main
+  node_map           = local.UNIQUENAME_node_map
   
   # Some parameters have default values. You may wish to override them, or set them
   # to `null` to completely remove any value.
