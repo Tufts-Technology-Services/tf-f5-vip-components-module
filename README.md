@@ -48,7 +48,6 @@ resource "bigip_ltm_node" "UNIQUENAME_node" {
   address          = "${each.value.address}"
   connection_limit = "0"
   dynamic_ratio    = "1"
-  monitor          = "/Common/icmp"
 
   # it's recommended to add some sort of signifier so that others will know 
   # this node is managed via terraform, thus the tf- here in the description
