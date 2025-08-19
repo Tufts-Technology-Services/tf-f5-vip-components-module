@@ -15,11 +15,11 @@ Here's an example:
 
 ```hcl
 locals {
-  vip_partition = "mypartition"
+  UNIQUENAME_vip_partition = "mypartition"
   
   # this structure is passed into the module and also 
   # reused for node creation outside of the module
-  node_map_main = {
+  UNIQUENAME_node_map_main = {
     # this key currently isn't used in the module, but might be at a future date.
     # any value will work here, as long as they're unique.
     "01" = {
@@ -41,8 +41,8 @@ locals {
 }
 
 # now let's create our nodes based on the structure  
-resource "bigip_ltm_node" "node" {
-  for_each = local.node_map_main
+resource "bigip_ltm_node" "UNIQUENAME_node" {
+  for_each = local.UNIQUENAME_node_map_main
   
   name             = "/${local.vip_partition}/${each.value.name}"
   address          = "${each.value.address}"
@@ -60,25 +60,25 @@ resource "bigip_ltm_node" "node" {
 Now let's create the actual VIP, pool, and handle attaching the nodes to the pool via a "bare minimum" example:
 
 ```hcl
-module "test-vip" {
+module "UNIQUENAME-vip-80" {
   source            = "github.com/Tufts-Technology-Services/tf-f5-vip-components-module?ref=v0.0.7"
 
   # the vip_port will automatically get appended to the vip_name
-  vip_name           = "test-vip"
+  vip_name           = "UNIQUENAME-vip"
   vip_destination_ip = "w.x.y.z"
 
   # "tf-" will automatically be prepended to the vip description
   vip_description    = "my vip"
   vip_port           = 80
-  vip_partition      = local.vip_partition
-  vip_enabled_vlans = ["/mypartition/someVLAN"]
+  vip_partition      = local.UNIQUENAME_vip_partition
+  vip_enabled_vlans = ["/mypartition/someVLAN"] # need to manually enter the partition name again here
 
   # node_listen_port will automatically get appended to the pool_name
-  pool_name          = "pool-test-tf"
-  pool_description   = "pool-test-tf"
+  pool_name          = "pool-UNIQUENAME-tf"
+  pool_description   = "pool-UNIQUENAME-tf"
 
   node_listen_port   = 80
-  node_map           = local.node_map_main
+  node_map           = local.UNIQUENAME_node_map_main
 }  
 ```
 
