@@ -82,9 +82,18 @@ module "UNIQUENAME-vip-80" {
   node_listen_port   = 80
   node_map           = local.UNIQUENAME_node_map_main
   
-  # vip_irule_list default is ["/Common/Drop-Non-Tufts-Connections"]
-  # You may override the value here.
-  # vip_irule_list    = null
+  # Some parameters have default values. You may wish to override them, or set them
+  # to `null` to completely remove any value.
+  # 
+  # Parameter Name                 | Default Value
+  # -------------------------------+-------------------------------
+  # vip_irule_list                 | ["/Common/Drop-Non-Tufts-Connections"]  
+  # vip_client_profiles_list       | ["/Common/clientssl"]
+  # vip_server_profiles_list       | ["/Common/serverssl"]
+  # vip_profiles_list              | ["/Common/tcp"]
+  # vip_sec_log_profiles_list      | ["/Common/global-network"]
+  # vip_persistence_profiles       | ["/Common/source_addr"]
+  # vip_source_address_translation | "automap"
 }  
 ```
 
