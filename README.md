@@ -48,7 +48,6 @@ resource "bigip_ltm_node" "UNIQUENAME_node" {
   address          = "${each.value.address}"
   connection_limit = "0"
   dynamic_ratio    = "1"
-  monitor          = "/Common/tcp"
 
   # it's recommended to add some sort of signifier so that others will know 
   # this node is managed via terraform, thus the tf- here in the description
@@ -79,6 +78,7 @@ module "UNIQUENAME-vip-80" {
   # node_listen_port will automatically get appended to the pool_name
   pool_name          = "pool-UNIQUENAME-tf"
   pool_description   = "pool-UNIQUENAME-tf"
+  pool_monitors_list = ["/Common/tcp"]
 
   node_listen_port   = 80
   node_map           = local.UNIQUENAME_node_map
