@@ -20,11 +20,11 @@ locals {
   # this structure is passed into the module and also 
   # reused for node creation outside of the module
   UNIQUENAME_node_map = {
-    # this key currently isn't used in the module, but might be at a future date.
-    # any value will work here, as long as they're unique.
+    # the keys in this dictionary (e.g. "01", "02" etc) are not used for anything.
+    # you may use anything you like for the keys, as long as they're unique.
     "01" = {
-      name        = "hostname1.example.com",
-      description = "host 1",
+      name        = "tf-hostname1.example.com",  # yes use "tf-" prefix here
+      description = "hostname1.example.com",     # no "tf-" prefix here. It's added automatically in the `_node` declaration down below
       address     = "a.b.c.d",
 
       # this controls how the node is added/updated to the pool:
