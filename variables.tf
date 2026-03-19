@@ -100,7 +100,7 @@ variable "pool_description" {
 variable "pool_load_balancing_mode" {
   type        = string
   default     = "round-robin"
-  description = "Load balancing mode. Valid values TBD."
+  description = "Load balancing mode. Valid values listed in properties.md file."
 }
 
 variable "pool_minimum_active_members" {

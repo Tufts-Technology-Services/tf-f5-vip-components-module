@@ -2,101 +2,80 @@
 
 ## Usage
 
-See below for examples.  Most input variables make an attempt at setting a "sane and reasonable" default but can be overridden if desired.  For the list of input variables and their requirements/defaults, see: [./variables.tf](variables.tf)
+See below for examples.  Most input variables make an attempt at setting a "sane and reasonable" default but can be overridden if desired.  If you want to override a default, you can pass a new value instead, or, if you don't have a replacement value but still want to remove the default that would otherwise be applied, you can pass `null` as a value.
+
+For the list of input variables and their requirements/defaults, see below in this readme.
 
 If you don't see a variable for something that you need, it's probably either:
 
 1. it just hasn't been added to the module yet; feel free to open an issue to discuss; or,
 1. it's something that just isn't straightforward at all or doesn't align with the web UI; try looking at [.properties.md](properties.md) to see if it's documented there
 
-Note that creating the nodes themselves happens outside the module to allow for flexibility and for nodes participating in >1 pool.
+## Examples
 
-Here's an example:
+The [examples](./examples/) folder has example code with comments that can be copy-pasted, including:
 
-```hcl
-locals {
-  UNIQUENAME_vip_partition = "mypartition"
-  
-  # this structure is passed into the module and also 
-  # reused for node creation outside of the module
-  UNIQUENAME_node_map = {
-    # the keys in this dictionary (e.g. "01", "02" etc) are not used for anything.
-    # you may use anything you like for the keys, as long as they're unique.
-    "01" = {
-      name        = "tf-hostname1.example.com",  # yes use "tf-" prefix here
-      description = "hostname1.example.com",     # no "tf-" prefix here. It's added automatically in the `_node` declaration down below
-      address     = "a.b.c.d",
+- How to create nodes: [creating-nodes.tf](./examples/creating-nodes.tf)
+  - Note that creating the nodes themselves happens outside the module to allow for flexibility and for nodes participating in >1 pool. Since we need to build a data structure that includes the node info anyways, we can take advantage of that structure to also build the nodes via a loop.
+- a basic, minimal VIP: [basic-vip.tf](./examples/basic-vip.tf)
 
-      # this controls how the node is added/updated to the pool:
-      # enabled, disabled, forced_offline
-      pool_state  = "enabled",
-    },
-    "02" = {
-      name        = "hostname2.example.com",
-      description = "host 2",
-      address     = "a.b.c.e",
-      pool_state  = "enabled",
-    },
-  }
-}
+Note that many of the module parameters have defaults set so that it's not always necessary to specify every parameter.  For the list of parameters, whether they're optional or required, and what the defaults are, if any, see the section below.
 
-# now let's create our nodes based on the structure  
-resource "bigip_ltm_node" "UNIQUENAME_node" {
-  for_each = local.UNIQUENAME_node_map
-  
-  name             = "/${local.UNIQUENAME_vip_partition}/${each.value.name}"
-  address          = "${each.value.address}"
-  connection_limit = "0"
-  dynamic_ratio    = "1"
+<!-- markdownlint-disable MD033 MD060 -->
+<!-- BEGIN_TF_DOCS -->
+## Requirements
 
-  # it's recommended to add some sort of signifier so that others will know 
-  # this node is managed via terraform, thus the tf- here in the description
-  description      = "tf-${each.value.description}"
-  rate_limit       = "disabled"
-}
-```
+| Name | Version |
+|------|---------|
+| <a name="requirement_bigip"></a> [bigip](#requirement\_bigip) | >= 1.22.0 |
 
-Now let's create the actual VIP, pool, and handle attaching the nodes to the pool via a "bare minimum" example:
+## Providers
 
-```hcl
-module "UNIQUENAME-vip-80" {
-  source            = "github.com/Tufts-Technology-Services/tf-f5-vip-components-module?ref=v0.0.7"
+| Name | Version |
+|------|---------|
+| <a name="provider_bigip"></a> [bigip](#provider\_bigip) | >= 1.22.0 |
 
-  # the vip_port will automatically get appended to the vip_name
-  vip_name           = "UNIQUENAME-vip"
-  vip_destination_ip = "w.x.y.z"
+## Modules
 
-  # "tf-" will automatically be prepended to the vip description
-  vip_description    = "UNIQUENAME"
-  vip_port           = 80
-  vip_partition      = local.UNIQUENAME_vip_partition
-  
-  # To find what VLAN you will listen on, go to Network > Self IPs. Find the F5 IP
-  # that is on the same subnet as your destination IP, and look at the "VLAN / Tunnel"
-  vip_enabled_vlans = ["/Common/someVLAN"]
+No modules.
 
-  # node_listen_port will automatically get appended to the pool_name
-  pool_name          = "pool-UNIQUENAME-tf"
-  pool_description   = "pool-UNIQUENAME-tf"
-  pool_monitors_list = ["/Common/tcp"]
+## Resources
 
-  node_listen_port   = 80
-  node_map           = local.UNIQUENAME_node_map
-  
-  # Some parameters have default values. You may wish to override them, or set them
-  # to `null` to completely remove any value.
-  # 
-  # Parameter Name                 | Default Value
-  # -------------------------------+-------------------------------
-  # vip_irule_list                 | ["/Common/Drop-Non-Tufts-Connections"]  
-  # vip_client_profiles_list       | ["/Common/clientssl"]
-  # vip_server_profiles_list       | ["/Common/serverssl"]
-  # vip_profiles_list              | ["/Common/tcp"]
-  # vip_sec_log_profiles_list      | ["/Common/global-network"]
-  # vip_persistence_profiles       | ["/Common/source_addr"]
-  # vip_source_address_translation | "automap"
-}  
-```
+| Name | Type |
+|------|------|
+| [bigip_ltm_pool.pool](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/ltm_pool) | resource |
+| [bigip_ltm_pool_attachment.attach_node](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/ltm_pool_attachment) | resource |
+| [bigip_ltm_virtual_server.vip](https://registry.terraform.io/providers/F5Networks/bigip/latest/docs/resources/ltm_virtual_server) | resource |
+
+## Inputs
+
+| Name | Description | Type | Default | Required |
+|------|-------------|------|---------|:--------:|
+| <a name="input_node_listen_port"></a> [node\_listen\_port](#input\_node\_listen\_port) | the port that the nodes will listen on. Can be different than vip\_port. | `number` | n/a | yes |
+| <a name="input_node_map"></a> [node\_map](#input\_node\_map) | object containing the nodes to add to the pool | <pre>map(object({<br/>    name        = string,<br/>    description = string,<br/>    address     = string,<br/>    pool_state  = string,<br/>  }))</pre> | `{}` | no |
+| <a name="input_pool_description"></a> [pool\_description](#input\_pool\_description) | name of the pool, automatically gets tf- prepended | `string` | n/a | yes |
+| <a name="input_pool_load_balancing_mode"></a> [pool\_load\_balancing\_mode](#input\_pool\_load\_balancing\_mode) | Load balancing mode. Valid values listed in properties.md file. | `string` | `"round-robin"` | no |
+| <a name="input_pool_minimum_active_members"></a> [pool\_minimum\_active\_members](#input\_pool\_minimum\_active\_members) | n/a | `number` | `1` | no |
+| <a name="input_pool_monitors_list"></a> [pool\_monitors\_list](#input\_pool\_monitors\_list) | List of monitor names to associate with the pool | `list(string)` | `[]` | no |
+| <a name="input_pool_name"></a> [pool\_name](#input\_pool\_name) | name of the pool, node\_listen\_port gets automatically appended | `string` | n/a | yes |
+| <a name="input_vip_client_profiles_list"></a> [vip\_client\_profiles\_list](#input\_vip\_client\_profiles\_list) | list of profiles, including partition | `list(string)` | <pre>[<br/>  "/Common/clientssl"<br/>]</pre> | no |
+| <a name="input_vip_description"></a> [vip\_description](#input\_vip\_description) | vip description (ticket, owner, etc), automatically gets tf- appended | `string` | n/a | yes |
+| <a name="input_vip_destination_ip"></a> [vip\_destination\_ip](#input\_vip\_destination\_ip) | target IP that the VIP will listen on | `string` | n/a | yes |
+| <a name="input_vip_enabled_vlans"></a> [vip\_enabled\_vlans](#input\_vip\_enabled\_vlans) | list of vlans, including partition, on which to enable traffic for VIP listener | `list(string)` | n/a | yes |
+| <a name="input_vip_irule_list"></a> [vip\_irule\_list](#input\_vip\_irule\_list) | list of irules, including partition | `list(string)` | <pre>[<br/>  "/Common/Drop-Non-Tufts-Connections"<br/>]</pre> | no |
+| <a name="input_vip_name"></a> [vip\_name](#input\_vip\_name) | the name of the VIP/virtual server | `string` | n/a | yes |
+| <a name="input_vip_partition"></a> [vip\_partition](#input\_vip\_partition) | the partition/namespace inside the F5 device where the VIP lives | `string` | n/a | yes |
+| <a name="input_vip_persistence_profiles"></a> [vip\_persistence\_profiles](#input\_vip\_persistence\_profiles) | list of profiles, including partition | `list(string)` | <pre>[<br/>  "/Common/source_addr"<br/>]</pre> | no |
+| <a name="input_vip_port"></a> [vip\_port](#input\_vip\_port) | the port that the VIP listens on | `number` | n/a | yes |
+| <a name="input_vip_profiles_list"></a> [vip\_profiles\_list](#input\_vip\_profiles\_list) | These get applied to both client and server. list of profiles, including partition | `list(string)` | <pre>[<br/>  "/Common/tcp"<br/>]</pre> | no |
+| <a name="input_vip_sec_log_profiles_list"></a> [vip\_sec\_log\_profiles\_list](#input\_vip\_sec\_log\_profiles\_list) | list of profiles, including partition | `list(string)` | <pre>[<br/>  "/Common/global-network"<br/>]</pre> | no |
+| <a name="input_vip_server_profiles_list"></a> [vip\_server\_profiles\_list](#input\_vip\_server\_profiles\_list) | list of profiles, including partition | `list(string)` | <pre>[<br/>  "/Common/serverssl"<br/>]</pre> | no |
+| <a name="input_vip_source_address_translation"></a> [vip\_source\_address\_translation](#input\_vip\_source\_address\_translation) | the type of translatio to be used, if any. snat, automap, none | `string` | `"automap"` | no |
+
+## Outputs
+
+No outputs.
+<!-- END_TF_DOCS -->
 
 ## Known issues
 

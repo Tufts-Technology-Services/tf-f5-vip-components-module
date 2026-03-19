@@ -29,6 +29,34 @@ TBD if:
 
 ## Pool level
 
+### valid values for pool_load_balancing_mode
+
+This info was originally missing, but eventually someone got back to me on github to provide the full list of values:
+
+<https://github.com/F5Networks/terraform-provider-bigip/issues/1006>
+
+```text
+dynamic-ratio-member
+dynamic-ratio-node 
+fastest-app-response
+fastest-node 
+least-connections-members
+least-connections-node
+least-sessions
+observed-member
+observed-node
+predictive-member
+predictive-node
+ratio-least-connections-member
+ratio-least-connections-node
+ratio-member
+ratio-node
+ratio-session
+round-robin
+weighted-least-connections-member
+weighted-least-connections-node
+```
+
 ### SMTP health checks
 
 The F5 docs state:
