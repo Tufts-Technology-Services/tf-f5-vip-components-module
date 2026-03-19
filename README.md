@@ -1,5 +1,10 @@
 # tf-f5-vip-components-module
 
+This repository consists of a Terraform module intended for use for automating the creation of virtual servers in the on-prem F5 load-balancers. The following links provide more information:
+
+- [F5 automation](https://tuftswork.atlassian.net/wiki/spaces/EnterpriseSystems/pages/1224114177/F5+automation) documents the overall project and the various parts of it
+- [github repository search](https://github.com/orgs/Tufts-Technology-Services/repositories?q=props.Components%3Af5) shows all of the instances where this is being used and is where things actually get created/managed.  Note that this relies on [github-custom-repo-properties](https://github.com/Tufts-Technology-Services/github-custom-repo-properties) being set on the repositories in order to show up in that search
+
 ## Usage
 
 See below for examples.  Most input variables make an attempt at setting a "sane and reasonable" default but can be overridden if desired.  If you want to override a default, you can pass a new value instead, or, if you don't have a replacement value but still want to remove the default that would otherwise be applied, you can pass `null` as a value.
